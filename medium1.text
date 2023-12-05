@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+struct TreeNode {
+    int val;
+    struct TreeNode *left;
+    struct TreeNode *right;
+};
+
+struct TreeNode* lowestCommonAncestor(struct TreeNode* root, struct TreeNode* p, struct TreeNode* q) {
+    if (root == NULL) {
+        return NULL;
+    }
+
+    if (p->val < root->val && q->val < root->val) {
+        // Both nodes are in the left subtree
+        return lowestCommonAncestor(root->left, p, q);
+    } else if (p->val > root->val && q->val > root->val) {
+        // Both nodes are in the right subtree
+        return lowestCommonAncestor(root->right, p, q);
+    } else {
+        // Current node is the LCA
+        return root;
+    }
+}
+
+// Helper function to create a new tree node
+struct TreeNode* createNode(int val) {
+    struct TreeNode* newNode = (struct TreeNode*)malloc(sizeof(struct TreeNode));
+    newNode->val = val;
+    newNode->left = NULL;
+    newNode->right = NULL;
+    return newNode;
+}
+
+// Function to insert a value into the BST
+struct TreeNode* insert(struct TreeNode* root, int val) {
+    if (root == NULL) {
+        return createNode(val);
+    }
+
+    if (val < root->val) {
+        root->left = insert(root->left, val);
+    } else if (val > root->val) {
+        root->right = insert(root->right, val);
+    }
+
+    return root;
+}
+
+int main() {
+    struct TreeNode* root = NULL;
+    int n, val;
+
+    // Get the number of nodes in the BST
+    printf("Enter the number of nodes in the BST: ");
+    scanf("%d", &n);
+
+    // Get the values of nodes and insert into the BST
+    printf("Enter the values of the nodes (space-separated): ");
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &val);
+        root = insert(root, val);
+    }
+
+    // Nodes to find LCA for
+    int p_val, q_val;
+    printf("Enter the value of node p: ");
+    scanf("%d", &p_val);
+
+    printf("Enter the value of node q: ");
+    scanf("%d", &q_val);
+
+    struct TreeNode* p = createNode(p_val);
+    struct TreeNode* q = createNode(q_val);
+
+    struct TreeNode* lca = lowestCommonAncestor(root, p, q);
+
+    printf("Lowest Common Ancestor: %d\n", lca->val);
+
+    // Free allocated memory (if needed)
+    // ...
+
+    return 0;
+}
